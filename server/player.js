@@ -1,12 +1,14 @@
 const players = {};
  
-//const WINDOW_WIDTH = require("../static/game").WINDOW_WIDTH;
-//const WINDOW_HIGHT = require("../static/game").WINDOW_HIGHT;
-//import { WINDOW_WIDTH } from "../static/game";
 width = 800;
 height = 600;
 const WINDOW_WIDTH = width;
 const WINDOW_HIGHT = height;
+//const WINDOW_WIDTH = require("../static/game").WINDOW_WIDTH;
+//const WINDOW_HIGHT = require("../static/game").WINDOW_HIGHT;
+//import { WINDOW_WIDTH } from "../static/game";
+//import { terms } from "../global_terms/terms";
+//const terms = require("../global_terms/terms copy").terms;
 
 class Player {
     constructor(props){

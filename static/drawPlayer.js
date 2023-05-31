@@ -3,13 +3,13 @@ const drawPlayer = (context, player) => {
     const playerY = player.positionY;
 
     context.beginPath();
-    context.fillStyle = "red";
+    context.fillStyle = "white";
     context.font = "20px sans-serif";
     context.fillText(`Игрок ${player._name+1}`, playerX - 35, playerY - 50);
     context.closePath();
 
     context.beginPath();
-    context.strokeStyle = "white";
+    context.strokeStyle = "yellow";
     context.lineWidth = 10;
     context.arc(playerX, playerY, player._playerRadius, 0, Math.PI * 2);
     context.stroke();

@@ -1,4 +1,4 @@
-export let terms = {
+ terms = {
     WINDOW_WIDTH: 800,
     WINDOW_HIGHT: 600,
 };
