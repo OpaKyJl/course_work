@@ -3,9 +3,10 @@ const drawPlayer = (context, player) => {
     const playerY = player.positionY;
 
     context.beginPath();
-    context.fillStyle = "red";
+    context.fillStyle = "black";
     context.font = "20px sans-serif";
-    context.fillText(`Игрок ${player._name+1}`, playerX - 35, playerY - 50);
+    context.textAlign = "center";
+    context.fillText(`${player._name}`, playerX, playerY - 50);
     context.closePath();
 
     context.beginPath();

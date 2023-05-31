@@ -3,8 +3,8 @@ const players = {};
 //const WINDOW_WIDTH = require("../static/game").WINDOW_WIDTH;
 //const WINDOW_HIGHT = require("../static/game").WINDOW_HIGHT;
 //import { WINDOW_WIDTH } from "../static/game";
-width = 800;
-height = 600;
+width = 1920 - 300 - 10;//1600;
+height = 1080 - 150 - 10;
 const WINDOW_WIDTH = width;
 const WINDOW_HIGHT = height;
 
@@ -20,10 +20,10 @@ class Player {
 }
 
 module.exports.getPlayers = (socket) => {
-    socket.on("new player", () => {
+    socket.on("new player", (_name) => {
         players[socket.id] = new Player({
             id: socket.id,
-            name: Object.keys(players).length,
+            name: _name,//Object.keys(players).length,//prompt("Введите имя", "Игрок"),//Object.keys(players).length,
         });
     });
 
