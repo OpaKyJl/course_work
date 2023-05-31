@@ -29,17 +29,18 @@ module.exports.getPlayers = (socket) => {
 
     socket.on("movement", (move) => {//получим результаты из move.js
         const player = players[socket.id] || {};
+        const speed = 10;
         if(move.left && player.positionX > 0){
-            player.positionX -= 5;
+            player.positionX -= speed;
         }
         if(move.up && player.positionY > 0){
-            player.positionY -= 5;
+            player.positionY -= speed;
         }
         if(move.right && player.positionX < WINDOW_WIDTH){
-            player.positionX += 5;
+            player.positionX += speed;
         }
         if(move.down && player.positionY < WINDOW_HIGHT){
-            player.positionY += 5;
+            player.positionY += speed;
         }
     })
 

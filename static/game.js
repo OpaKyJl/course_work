@@ -32,8 +32,25 @@ socket.on("state", (players) => {
     context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
     //context.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
     context.closePath();
+    let array_id = [];
+    let i = 0;
     for (const id in players) {
-        const player = players[id];
-        drawPlayer(context, player);
+        array_id[i] = id;
+        i++;
+    }
+    //let count = 1;
+    if(Object.keys(players).length > 2){
+        for (i=0;i<2;i++) {
+            //if(count <= 2){
+                const player = players[array_id[i]];
+                drawPlayer(context, player);
+            }
+            //count++;
+        //}
+    }else{
+        for (const id in players) {
+            const player = players[id];
+                drawPlayer(context, player);
+        }
     }
 });
