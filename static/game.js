@@ -1,7 +1,7 @@
 const socket = io();
 
-width = 1920 - 300 - 10;//1600;
-height = 1080 - 150 - 10;//800;
+width = 1610;//1920 - 300 - 10;//1600;
+height = 920//1080 - 150 - 10;//800;
 const WINDOW_WIDTH = width;
 const WINDOW_HIGHT = height;
 
@@ -38,19 +38,27 @@ socket.on("state", (players) => {
         array_id[i] = id;
         i++;
     }
-    //let count = 1;
+
     if(Object.keys(players).length > 2){
         for (i=0;i<2;i++) {
-            //if(count <= 2){
-                const player = players[array_id[i]];
-                drawPlayer(context, player);
-            }
-            //count++;
-        //}
+            const player = players[array_id[i]];
+            drawPlayer(context, player);
+        }
     }else{
         for (const id in players) {
             const player = players[id];
                 drawPlayer(context, player);
         }
     }
+    
+    //сюда добавить считывание координат + кто столкнулся
+    if(    players[array_id[0]].positionX > (players[array_id[1]].positionX - 60) 
+        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 60) 
+        && players[array_id[0]].positionY < (players[array_id[1]].positionY + 60) 
+        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 60) 
+        && players[array_id[0]].positionY > (players[array_id[1]].positionY - 60))
+    {
+        alert("Crush!!!");
+    }
+
 });

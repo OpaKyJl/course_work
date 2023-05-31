@@ -14,8 +14,8 @@ class Player {
         this._id = props.id;
         this._playerRadius = 30;
 
-        this.positionX = 300;
-        this.positionY = 300;
+        this.positionX = Math.floor(Math.random()* 1610);// (max - min) + min 300;
+        this.positionY = Math.floor(Math.random()* 920);
     }
 }
 
