@@ -1,7 +1,9 @@
 const socket = io();
 
-const WINDOW_WIDTH = 800;
-const WINDOW_HIGHT = 600;
+width = 800;
+height = 600;
+const WINDOW_WIDTH = width;
+const WINDOW_HIGHT = height;
 
 const canvas = document.getElementById("canvas");
 canvas.width = WINDOW_WIDTH;

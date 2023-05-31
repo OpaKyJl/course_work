@@ -1,4 +1,12 @@
 const players = {};
+ 
+//const WINDOW_WIDTH = require("../static/game").WINDOW_WIDTH;
+//const WINDOW_HIGHT = require("../static/game").WINDOW_HIGHT;
+//import { WINDOW_WIDTH } from "../static/game";
+width = 800;
+height = 600;
+const WINDOW_WIDTH = width;
+const WINDOW_HIGHT = height;
 
 class Player {
     constructor(props){
@@ -19,18 +27,18 @@ module.exports.getPlayers = (socket) => {
         });
     });
 
-    socket.on("movement", (move) => {
+    socket.on("movement", (move) => {//получим результаты из move.js
         const player = players[socket.id] || {};
-        if(move.left){
+        if(move.left && player.positionX > 0){
             player.positionX -= 5;
         }
-        if(move.up){
+        if(move.up && player.positionY > 0){
             player.positionY -= 5;
         }
-        if(move.right){
+        if(move.right && player.positionX < WINDOW_WIDTH){
             player.positionX += 5;
         }
-        if(move.down){
+        if(move.down && player.positionY < WINDOW_HIGHT){
             player.positionY += 5;
         }
     })
