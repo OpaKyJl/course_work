@@ -13,6 +13,7 @@ class Player {
         this._name = props.name;
         this._id = props.id;
         this._playerRadius = 30;
+        this._hot = false;
 
         this.positionX = Math.floor(Math.random()* 1610);// (max - min) + min 300;
         this.positionY = Math.floor(Math.random()* 920);
@@ -42,6 +43,12 @@ module.exports.getPlayers = (socket) => {
         if(move.down && player.positionY < WINDOW_HIGHT){
             player.positionY += speed;
         }
+    })
+
+    //переключение картошки
+    socket.on("hot", (player_hot, player_cold) => {
+        player_hot._hot = false;
+        player_cold._hot = true;
     })
 
     socket.on("disconnect", () => {

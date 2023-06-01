@@ -42,6 +42,9 @@ socket.on("state", (players) => {
     if(Object.keys(players).length > 2){
         for (i=0;i<2;i++) {
             const player = players[array_id[i]];
+            if(i == 0){
+                player._hot = true;
+            }
             drawPlayer(context, player);
         }
     }else{
@@ -52,13 +55,21 @@ socket.on("state", (players) => {
     }
     
     //сюда добавить считывание координат + кто столкнулся
-    if(    players[array_id[0]].positionX > (players[array_id[1]].positionX - 60) 
-        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 60) 
-        && players[array_id[0]].positionY < (players[array_id[1]].positionY + 60) 
-        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 60) 
-        && players[array_id[0]].positionY > (players[array_id[1]].positionY - 60))
+    //или на player.js перенести
+    if(    players[array_id[0]].positionX > (players[array_id[1]].positionX - 30) 
+        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 30) 
+        && players[array_id[0]].positionY < (players[array_id[1]].positionY + 30) 
+        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 30) 
+        && players[array_id[0]].positionY > (players[array_id[1]].positionY - 30))
     {
         alert("Crush!!!");
+        //тут передавать плэеров
+        //что перенос картошки произошёл
+        if(players[array_id[0]]._hot == false){
+            socket.emit("hot", players[array_id[1]], players[array_id[0]]);
+        }else{
+            socket.emit("hot", players[array_id[0]], players[array_id[1]]);
+        }
     }
 
 });
