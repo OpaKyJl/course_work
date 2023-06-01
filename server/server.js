@@ -35,8 +35,9 @@ setInterval(() => {
     }
 }, 1000 / 60)
 
+
 let timer = 30;
 setInterval(() => {
     io.sockets.emit("timer", timer);
-    timer--;
+    if(timer>0) timer--;
 }, 1000)

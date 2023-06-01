@@ -21,15 +21,19 @@ while (_name.length > 15){
     _name = prompt("Введите имя (до 15 символов)");
 }
 
+const start_game = document.getElementById("start_game");
 const timer = document.getElementById("timer");
-count = 15;
-socket.on("timer", (count) => {
+
+//таймер по кнопке пошёл заного
+//сделать чтобы если игроков меньше 2 таймер не запускался
+start_game.addEventListener('click', () => {
+        //таймер
+        socket.on("timer", (count) => {
         timer.textContent = count;
-});//15;
-/*setInterval(() => {
-    timer.textContent = count;
-    count--;
-}, 1000)*/
+    });
+})
+
+
 
 socket.emit("new player", _name);//при добавлении игрока спрашиваем его имя и записываем
 var img = new Image();
@@ -39,13 +43,6 @@ socket.on("state", (players) => {
     let timer = 15;
     context.beginPath();
     context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
-    /*setInterval(() => {
-        context.font = "50px Comic Sans MS";
-        context.fillStyle = "black";
-        context.textAlign = "right-aligned";
-        context.fillText(timer, 45, 55);
-        timer--;
-    }, 1000)*/
     context.closePath();
 
     let array_id = [];
@@ -87,8 +84,5 @@ socket.on("state", (players) => {
             socket.emit("hot", players[array_id[0]], players[array_id[1]]);
         }
     }
-
-    //таймер сетИнтервал сделать 1 000
     
-
 });
