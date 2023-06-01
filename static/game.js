@@ -21,17 +21,33 @@ while (_name.length > 15){
     _name = prompt("Введите имя (до 15 символов)");
 }
 
+const timer = document.getElementById("timer");
+count = 15;
+socket.on("timer", (count) => {
+        timer.textContent = count;
+});//15;
+/*setInterval(() => {
+    timer.textContent = count;
+    count--;
+}, 1000)*/
 
 socket.emit("new player", _name);//при добавлении игрока спрашиваем его имя и записываем
 var img = new Image();
 img.src = "https://lh3.googleusercontent.com/VJh9Caz9ToCNY5Ny71MDpf_bHhFCDjl_ao3AW5i3LeOEvXNA3PdBY-GAHhVKX-8VzD5Z_aMYEVK_stWgoNY1oJN076JpvhR_8L9hg5o";
 
 socket.on("state", (players) => {
+    let timer = 15;
     context.beginPath();
-    //context.fillStyle = "black";
     context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
-    //context.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
+    /*setInterval(() => {
+        context.font = "50px Comic Sans MS";
+        context.fillStyle = "black";
+        context.textAlign = "right-aligned";
+        context.fillText(timer, 45, 55);
+        timer--;
+    }, 1000)*/
     context.closePath();
+
     let array_id = [];
     let i = 0;
     for (const id in players) {
@@ -71,5 +87,8 @@ socket.on("state", (players) => {
             socket.emit("hot", players[array_id[0]], players[array_id[1]]);
         }
     }
+
+    //таймер сетИнтервал сделать 1 000
+    
 
 });

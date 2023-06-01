@@ -34,3 +34,9 @@ setInterval(() => {
         gameLoop(players, io);
     }
 }, 1000 / 60)
+
+let timer = 30;
+setInterval(() => {
+    io.sockets.emit("timer", timer);
+    timer--;
+}, 1000)
