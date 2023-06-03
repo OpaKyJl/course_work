@@ -57,31 +57,21 @@ const gameLoop = (players, io) => {
             i++;
         }
 
-        if(    players[array_id[0]]?.positionX > (players[array_id[1]]?.positionX - 30)//? - чтоб не вылазила ошибка при undefined 
-            && players[array_id[0]]?.positionX < (players[array_id[1]]?.positionX + 30) 
-            && players[array_id[0]]?.positionY < (players[array_id[1]]?.positionY + 30) 
-            && players[array_id[0]]?.positionY > players[array_id[1]]?.positionY - 30)
+        if(    players[array_id[0]]?.positionX > (players[array_id[1]]?.positionX - 55)//? - чтоб не вылазила ошибка при undefined 
+            && players[array_id[0]]?.positionX < (players[array_id[1]]?.positionX + 55) 
+            && players[array_id[0]]?.positionY < (players[array_id[1]]?.positionY + 55) 
+            && players[array_id[0]]?.positionY > players[array_id[1]]?.positionY - 55)
         {
 
             if(players[array_id[0]]?._space == true || players[array_id[1]]?._space == true){
                 if(players[array_id[0]]?._space == true){
                     hot(players[array_id[1]], players[array_id[0]]);
-                    console.log(players[array_id[0]]._hot);
-                    console.log(players[array_id[1]]._hot);
 
                 }else if(players[array_id[1]]?._space == true){
                     hot(players[array_id[0]], players[array_id[1]]);
-                    console.log(players[array_id[0]]._hot);
-                    console.log(players[array_id[1]]._hot);
 
                 }
             }
-            console.log("------");
-            console.log(players[array_id[0]]._space);
-            console.log(players[array_id[0]]._space);
-            //setInterval(() =>{
-                
-            //}, 1000)
         }
     io.sockets.emit("state", players);
 }
