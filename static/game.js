@@ -25,13 +25,25 @@ const start_game = document.getElementById("start_game");
 const timer = document.getElementById("timer");
 
 //таймер по кнопке пошёл заного
-//сделать чтобы если игроков меньше 2 таймер не запускался
+//сделать чтобы если игроков меньше 2 таймер не запускался +
+//чтоб кнопка пропадала, пока таймер не дойдёт до нуля
 start_game.addEventListener('click', () => {
-        //таймер
-        socket.on("timer", (count) => {
-        timer.textContent = count;
-    });
+        let count = 30;
+        socket.emit("start_game", count);
 })
+
+socket.on("timer_started", () => {
+    start_game.style.display = "none";
+})
+
+socket.on("timer_stoped", () => {
+    start_game.style.display = "block";
+})
+
+//таймер
+socket.on("timer", (time) => {
+    timer.textContent = time;
+});
 
 
 

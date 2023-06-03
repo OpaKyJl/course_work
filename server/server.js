@@ -1,3 +1,4 @@
+//const { count } = require("console");
 const express = require("express");
 const http = require("http");
 const path = require("path");
@@ -9,7 +10,9 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
 
+
 app.set("port", 5000);
+
 app.use("/static", express.static(path.dirname(__dirname) + "/static"));
 
 app.get("/", (request, response) => {
@@ -23,6 +26,20 @@ server.listen(5000, () => {
 let players = null;
 io.on("connection", (socket) => {
     players = getPlayers(socket);
+
+    //начинается таймер при нажатии, на кнопку
+    socket.on("start_game", (count) => {
+        io.sockets.emit("timer_started");
+        const intervalId = setInterval(() => {
+            io.sockets.emit("timer", count);
+            if(count>0) count--;
+            else {
+                clearInterval(intervalId);//когда таймер закончится, перестать его выполнять
+                io.sockets.emit("timer_stoped");
+            }
+        }, 1000)
+    })
+    
 });
 
 const gameLoop = (players, io) => {
@@ -34,10 +51,3 @@ setInterval(() => {
         gameLoop(players, io);
     }
 }, 1000 / 60)
-
-
-let timer = 30;
-setInterval(() => {
-    io.sockets.emit("timer", timer);
-    if(timer>0) timer--;
-}, 1000)
