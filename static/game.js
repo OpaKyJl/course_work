@@ -10,8 +10,6 @@ canvas.width = WINDOW_WIDTH;
 canvas.height = WINDOW_HIGHT;
 const context = canvas.getContext("2d");
 
-// message - текст сообщения (является не обязательным), предназначено для информирования пользователя о том, какие данные у него запрашиваются
-// default - начальное значение для поля ввода, которое будет по умолчанию в нём отображаться (является не обязательным)
 let _name = prompt("Введите имя (до 15 символов)");
 
 while (_name === "" || _name === null){
@@ -25,17 +23,18 @@ const start_game = document.getElementById("start_game");
 const timer = document.getElementById("timer");
 
 //таймер по кнопке пошёл заного
-//сделать чтобы если игроков меньше 2 таймер не запускался +
-//чтоб кнопка пропадала, пока таймер не дойдёт до нуля
+//сделать чтобы если игроков меньше 2 таймер не запускался
 start_game.addEventListener('click', () => {
         let count = 30;
         socket.emit("start_game", count);
 })
 
+//кнопка не отображается, пока идёт таймер
 socket.on("timer_started", () => {
     start_game.style.display = "none";
 })
 
+//кнопка снова отображается, когда таймер закончился
 socket.on("timer_stoped", () => {
     start_game.style.display = "block";
 })
@@ -44,6 +43,10 @@ socket.on("timer_stoped", () => {
 socket.on("timer", (time) => {
     timer.textContent = time;
 });
+
+socket.on("crush", () => {
+    alert("Crush!!!");
+})
 
 
 
@@ -79,9 +82,12 @@ socket.on("state", (players) => {
         }
     }
     
+    /*socket.on("crush", () => {
+        alert("Crush!!!");
+    })*/
     //сюда добавить считывание координат + кто столкнулся
     //или на player.js перенести
-    if(    players[array_id[0]].positionX > (players[array_id[1]].positionX - 30) 
+    /*if(    players[array_id[0]].positionX > (players[array_id[1]].positionX - 30) 
         && players[array_id[0]].positionX < (players[array_id[1]].positionX + 30) 
         && players[array_id[0]].positionY < (players[array_id[1]].positionY + 30) 
         && players[array_id[0]].positionX < (players[array_id[1]].positionX + 30) 
@@ -95,6 +101,6 @@ socket.on("state", (players) => {
         }else{
             socket.emit("hot", players[array_id[0]], players[array_id[1]]);
         }
-    }
+    }*/
     
 });
