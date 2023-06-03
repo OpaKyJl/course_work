@@ -44,10 +44,11 @@ socket.on("timer", (time) => {
     timer.textContent = time;
 });
 
-socket.on("crush", () => {
-    alert("Crush!!!");
+//проверка работоспособности столкновения
+socket.on("crush", (msg) => {
+    alert(msg);
+    //window.location.reload();
 })
-
 
 
 socket.emit("new player", _name);//при добавлении игрока спрашиваем его имя и записываем
@@ -81,26 +82,5 @@ socket.on("state", (players) => {
                 drawPlayer(context, player);
         }
     }
-    
-    /*socket.on("crush", () => {
-        alert("Crush!!!");
-    })*/
-    //сюда добавить считывание координат + кто столкнулся
-    //или на player.js перенести
-    /*if(    players[array_id[0]].positionX > (players[array_id[1]].positionX - 30) 
-        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 30) 
-        && players[array_id[0]].positionY < (players[array_id[1]].positionY + 30) 
-        && players[array_id[0]].positionX < (players[array_id[1]].positionX + 30) 
-        && players[array_id[0]].positionY > (players[array_id[1]].positionY - 30))
-    {
-        alert("Crush!!!");
-        //тут передавать плэеров
-        //что перенос картошки произошёл
-        if(players[array_id[0]]._hot == false){
-            socket.emit("hot", players[array_id[1]], players[array_id[0]]);
-        }else{
-            socket.emit("hot", players[array_id[0]], players[array_id[1]]);
-        }
-    }*/
     
 });

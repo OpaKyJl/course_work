@@ -3,6 +3,7 @@ const movement = {
     down: false,
     left: false,
     right: false,
+    space: false,
 }
 
 document.addEventListener("keydown", (event) => {
@@ -18,6 +19,9 @@ document.addEventListener("keydown", (event) => {
             break;
         case 83: //S
             movement.down = true;
+            break;
+        case 76: //space
+            movement.space = true;
             break;
     }
 });
@@ -35,6 +39,9 @@ document.addEventListener("keyup", (event) => {
             break;
         case 83: //S
             movement.down = false;
+            break;
+        case 76: //L (отдать картошку)
+            movement.space = false;
             break;
     }
 });

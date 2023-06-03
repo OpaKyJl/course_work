@@ -42,6 +42,12 @@ io.on("connection", (socket) => {
     
 });
 
+function hot(player_hot, player_cold){
+    player_hot._hot = true;
+    player_cold._hot = false;
+}
+
+//var crush = true;
 const gameLoop = (players, io) => {
 
     let array_id = [];
@@ -56,15 +62,26 @@ const gameLoop = (players, io) => {
             && players[array_id[0]]?.positionY < (players[array_id[1]]?.positionY + 30) 
             && players[array_id[0]]?.positionY > players[array_id[1]]?.positionY - 30)
         {
-            io.sockets.emit("crush");
 
-            //тут передавать плэеров
-            //что перенос картошки произошёл
-            if(players[array_id[0]]._hot == false){
-                io.sockets.emit("hot", players[array_id[1]], players[array_id[0]]);
-            }else{
-                io.sockets.emit("hot", players[array_id[0]], players[array_id[1]]);
+            if(players[array_id[0]]?._space == true || players[array_id[1]]?._space == true){
+                if(players[array_id[0]]?._space == true){
+                    hot(players[array_id[1]], players[array_id[0]]);
+                    console.log(players[array_id[0]]._hot);
+                    console.log(players[array_id[1]]._hot);
+
+                }else if(players[array_id[1]]?._space == true){
+                    hot(players[array_id[0]], players[array_id[1]]);
+                    console.log(players[array_id[0]]._hot);
+                    console.log(players[array_id[1]]._hot);
+
+                }
             }
+            console.log("------");
+            console.log(players[array_id[0]]._space);
+            console.log(players[array_id[0]]._space);
+            //setInterval(() =>{
+                
+            //}, 1000)
         }
     io.sockets.emit("state", players);
 }
