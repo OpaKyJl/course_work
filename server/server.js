@@ -19,15 +19,18 @@ app.get("/", (request, response) => {
     response.sendFile(path.join(__dirname, "index.html"));
 });
 
+var array_blocks = [];
+
 server.listen(5000, () => {
     console.log("Starting server on port 5000");
-    
+
     width = 1610;//1920 - 300 - 10;//1600;
     height = 920//1080 - 150 - 10;//800;
     const WINDOW_WIDTH = width;
     const WINDOW_HIGHT = height;
+    
     //рисуем препятствия (при запуске сервера)
-    let array_blocks = ["x0", "y0", "x1", "y1"];
+    //var array_blocks = ["x0", "y0", "x1", "y1"];
 
     for(i=0; i < 10; i++){
         let x0 = Math.floor(Math.random()* (WINDOW_WIDTH - 60));
@@ -40,9 +43,15 @@ server.listen(5000, () => {
            array_blocks.push([x0, y0, x1, y1]);
     }
 
+    //io.sockets.emit("drawedBlocks_for_player", array_blocks);
+    module.exports.array_blocks = () =>{
+        return array_blocks;
+    };
+    array = array_blocks;
+
     setInterval(() => {
-        io.sockets.emit("drawedBlocks", array_blocks);
-    }, 1000 / 60)
+        io.sockets.emit("drawedBlocks", array);
+    }, 1000 )
 
 });
 
@@ -80,6 +89,53 @@ const gameLoop = (players, io) => {
             array_id[i] = id;
             i++;
         }
+    //array_blocks;
+
+    //у плеера добавить проверку соприкосновения с блоком
+    
+    for (const id in players) {
+        const player = players[id];
+        var touch = 0;
+
+        //сделать чтоб понятно, с какой стороны препятствие
+        var block_side = "";
+        for(i=0; i < (array_blocks.length); i++){
+            if(
+                (player.positionX > (array_blocks[i][0] + array_blocks[i][2] + 30) || player.positionX < (array_blocks[i][0] - 30))//x1 и y2 это размерность, а не вторые координаты!!!
+                ||
+                (player.positionY > (array_blocks[i][1] + array_blocks[i][3] + 30) || player.positionY < (array_blocks[i][1] - 30))
+            ){
+            }else{
+                if((player.positionX > (array_blocks[i][0] + array_blocks[i][2]))) block_side = "right";
+                if((player.positionX < (array_blocks[i][0]))) block_side = "left";
+                if((player.positionY > (array_blocks[i][1] + array_blocks[i][3]))) block_side = "down";
+                if((player.positionY < (array_blocks[i][1]))) block_side = "up";
+            }
+        }
+        for(i=0; i < (array_blocks.length); i++){
+            if(
+                (player.positionX > (array_blocks[i][0] + array_blocks[i][2] + 30) || player.positionX < (array_blocks[i][0] - 30))//x1 и y2 это размерность, а не вторые координаты!!!
+                ||
+                (player.positionY > (array_blocks[i][1] + array_blocks[i][3] + 30) || player.positionY < (array_blocks[i][1] - 30))
+            ){
+
+            }else{
+                touch++;
+            }
+        }
+        if(touch != 0){
+            player._touch = true;
+        }else{
+            player._touch = false;
+        } 
+        console.log(array_blocks);
+        console.log(player._touch);
+        console.log(block_side);
+        console.log(player.positionX);
+        console.log(player.positionY);
+    }
+
+        //var blocks = array_blocks;
 
         if(    players[array_id[0]]?.positionX > (players[array_id[1]]?.positionX - 55)//? - чтоб не вылазила ошибка при undefined 
             && players[array_id[0]]?.positionX < (players[array_id[1]]?.positionX + 55) 
@@ -97,7 +153,8 @@ const gameLoop = (players, io) => {
                 }
             }
         }
-    io.sockets.emit("state", players);
+        
+        io.sockets.emit("state", players);
 }
 
 setInterval(() => {

@@ -71,26 +71,19 @@ for(i=0; i < 10; i++){
 }*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
+var array_blocks;
 socket.on("drawedBlocks", (array) => {
     array_blocks = array;
 })
 
 socket.on("state", (players) => {
-
-    //drawBlocks(context, WINDOW_WIDTH, WINDOW_HIGHT);
-
     context.beginPath();
     context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
     for(j = 0; j < array_blocks.length; j++){
         context.fillRect(array_blocks[j][0] ,array_blocks[j][1], array_blocks[j][2], array_blocks[j][3]);
     }
-    //context.fillRect(x0,y0,x1,y1);
     context.closePath();
-    
-    //socket.on("drawedBlocks", (ctx) =>{
-    //    context = ctx;
-    //});
+
 
     let array_id = [];
     let i = 0;

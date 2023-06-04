@@ -15,6 +15,7 @@ class Player {
         this._playerRadius = 30;
         this._hot = false;
         this._space = false;
+        this._touch = false;
 
         this.positionX = Math.floor(Math.random()* 1610);// (max - min) + min 300;
         this.positionY = Math.floor(Math.random()* 920);
@@ -32,19 +33,23 @@ module.exports.getPlayers = (socket) => {
     socket.on("movement", (move) => {//получим результаты из move.js
         const player = players[socket.id] || {};
         const speed = 10;
-        if(move.left && player.positionX > 0){
-            player.positionX -= speed;
+
+        if(!player._touch){
+            if(move.left && player.positionX > 0){
+                player.positionX -= speed;
+            }
+            if(move.up && player.positionY > 0){
+                player.positionY -= speed;
+            }
+            if(move.right && player.positionX < WINDOW_WIDTH){
+                player.positionX += speed;
+            }
+            if(move.down && player.positionY < WINDOW_HIGHT){
+                player.positionY += speed;
+            }
+            player._space = move.space;
         }
-        if(move.up && player.positionY > 0){
-            player.positionY -= speed;
-        }
-        if(move.right && player.positionX < WINDOW_WIDTH){
-            player.positionX += speed;
-        }
-        if(move.down && player.positionY < WINDOW_HIGHT){
-            player.positionY += speed;
-        }
-        player._space = move.space;
+
     })
 
     socket.on("disconnect", () => {
