@@ -21,6 +21,29 @@ app.get("/", (request, response) => {
 
 server.listen(5000, () => {
     console.log("Starting server on port 5000");
+    
+    width = 1610;//1920 - 300 - 10;//1600;
+    height = 920//1080 - 150 - 10;//800;
+    const WINDOW_WIDTH = width;
+    const WINDOW_HIGHT = height;
+    //рисуем препятствия (при запуске сервера)
+    let array_blocks = ["x0", "y0", "x1", "y1"];
+
+    for(i=0; i < 10; i++){
+        let x0 = Math.floor(Math.random()* (WINDOW_WIDTH - 60));
+        let y0 = Math.floor(Math.random()* (WINDOW_HIGHT - 60));
+        let sizex = Math.floor(Math.random()* (100 - 20) + 20);
+        let sizey = Math.floor(Math.random()* (100 - 20) + 20);
+        let x1 = sizex;
+        let y1 = sizey;
+    
+           array_blocks.push([x0, y0, x1, y1]);
+    }
+
+    setInterval(() => {
+        io.sockets.emit("drawedBlocks", array_blocks);
+    }, 1000 / 60)
+
 });
 
 let players = null;
@@ -41,6 +64,7 @@ io.on("connection", (socket) => {
     })
     
 });
+
 
 function hot(player_hot, player_cold){
     player_hot._hot = true;

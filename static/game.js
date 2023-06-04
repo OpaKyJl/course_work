@@ -50,16 +50,47 @@ socket.on("crush", (msg) => {
     //window.location.reload();
 })
 
-
 socket.emit("new player", _name);//при добавлении игрока спрашиваем его имя и записываем
 var img = new Image();
-img.src = "https://lh3.googleusercontent.com/VJh9Caz9ToCNY5Ny71MDpf_bHhFCDjl_ao3AW5i3LeOEvXNA3PdBY-GAHhVKX-8VzD5Z_aMYEVK_stWgoNY1oJN076JpvhR_8L9hg5o";
+img.src = "http://danila_pavlovv.istu.webappz.ru/img/background.jpg";
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//вынести на сервер
+/*let array_blocks = ["x0", "y0", "x1", "y1"];
+
+for(i=0; i < 10; i++){
+    let x0 = Math.floor(Math.random()* (WINDOW_WIDTH - 60));
+    let y0 = Math.floor(Math.random()* (WINDOW_HIGHT - 60));
+    let sizex = Math.floor(Math.random()* (100 - 20) + 20);
+    let sizey = Math.floor(Math.random()* (100 - 20) + 20);
+    let x1 = sizex;
+    let y1 = sizey;
+
+    array_blocks.push([x0, y0, x1, y1]);
+}*/
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+socket.on("drawedBlocks", (array) => {
+    array_blocks = array;
+})
 
 socket.on("state", (players) => {
-    let timer = 15;
+
+    //drawBlocks(context, WINDOW_WIDTH, WINDOW_HIGHT);
+
     context.beginPath();
     context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
+    for(j = 0; j < array_blocks.length; j++){
+        context.fillRect(array_blocks[j][0] ,array_blocks[j][1], array_blocks[j][2], array_blocks[j][3]);
+    }
+    //context.fillRect(x0,y0,x1,y1);
     context.closePath();
+    
+    //socket.on("drawedBlocks", (ctx) =>{
+    //    context = ctx;
+    //});
 
     let array_id = [];
     let i = 0;
@@ -71,9 +102,6 @@ socket.on("state", (players) => {
     if(Object.keys(players).length > 2){
         for (i=0;i<2;i++) {
             const player = players[array_id[i]];
-            if(i == 0){
-                player._hot = true;
-            }
             drawPlayer(context, player);
         }
     }else{
