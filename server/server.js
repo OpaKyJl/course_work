@@ -106,33 +106,20 @@ const gameLoop = (players, io) => {
                 (player.positionY > (array_blocks[i][1] + array_blocks[i][3] + 30) || player.positionY < (array_blocks[i][1] - 30))
             ){
             }else{
-                if((player.positionX > (array_blocks[i][0] + array_blocks[i][2]))) block_side = "right";
-                if((player.positionX < (array_blocks[i][0]))) block_side = "left";
-                if((player.positionY > (array_blocks[i][1] + array_blocks[i][3]))) block_side = "down";
-                if((player.positionY < (array_blocks[i][1]))) block_side = "up";
-            }
-        }
-        for(i=0; i < (array_blocks.length); i++){
-            if(
-                (player.positionX > (array_blocks[i][0] + array_blocks[i][2] + 30) || player.positionX < (array_blocks[i][0] - 30))//x1 и y2 это размерность, а не вторые координаты!!!
-                ||
-                (player.positionY > (array_blocks[i][1] + array_blocks[i][3] + 30) || player.positionY < (array_blocks[i][1] - 30))
-            ){
-
-            }else{
+                if((player.positionX < (array_blocks[i][0] + array_blocks[i][2] + 30)) && (player.positionX > (array_blocks[i][0] + array_blocks[i][2]))) block_side = "right";
+                if((player.positionX > (array_blocks[i][0] - 30)) && (player.positionX < (array_blocks[i][0]))) block_side = "left";
+                if((player.positionY < (array_blocks[i][1] + array_blocks[i][3] + 30)) && (player.positionY > (array_blocks[i][1] + array_blocks[i][3]))) block_side = "down";
+                if((player.positionY > (array_blocks[i][1] - 30)) && (player.positionY < (array_blocks[i][1]))) block_side = "up";
                 touch++;
             }
-        }
-        if(touch != 0){
-            player._touch = true;
-        }else{
-            player._touch = false;
-        } 
-        console.log(array_blocks);
-        console.log(player._touch);
+        }//добавить выход из лефт - right + up + down и аналогично для других
+
+        player._block_side = block_side;
+        //console.log(array_blocks);
+        //console.log(player._touch);
         console.log(block_side);
-        console.log(player.positionX);
-        console.log(player.positionY);
+        //console.log(player.positionX);
+        //console.log(player.positionY);
     }
 
         //var blocks = array_blocks;
