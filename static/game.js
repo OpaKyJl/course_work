@@ -23,6 +23,7 @@ const start_game = document.getElementById("start_game");
 start_game.style.width = "150px";
 start_game.style.height = "80px";
 start_game.style.fontSize = "30px";
+
 const timer = document.getElementById("timer");
 timer.style.width = "150px";
 timer.style.height = "30px";
@@ -42,6 +43,14 @@ watcher.style.fontSize = "30px";
 //watcher.style.textAlign ="center";
 watcher.style.margin ="auto";
 watcher.style.display ="inline-block";
+
+const winner = document.getElementById("winner");
+winner.style.width = "150px";
+winner.style.height = "30px";
+winner.style.fontSize = "30px";
+//watcher.style.textAlign ="center";
+winner.style.margin ="auto";
+winner.style.display ="inline-block";
 
 
 //таймер по кнопке пошёл заного
@@ -126,6 +135,20 @@ socket.on("state", (players) => {
         i++;
     }
 
+    let count_visibles = 0;
+    let visible_id;
+    for (const id in players) {
+        const player = players[id];
+        if(player._visible){
+            count_visibles++;
+            visible_id = id;
+        } 
+    }
+
+    if(count_visibles == 1 && (Object.keys(players).length > 1)){//проверять сколько visible
+        winner.textContent = players[visible_id]._name;
+
+    }
     if(Object.keys(players).length > 2){
         for (i=0;i<2;i++) {
             const player = players[array_id[i]];
