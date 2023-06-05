@@ -12,6 +12,11 @@ const context = canvas.getContext("2d");
 
 let _name = prompt("Введите имя (до 15 символов)");
 
+var img = new Image();
+img.src = "http://danila_pavlovv.istu.webappz.ru/img/background.jpg";
+
+var players_limit = 2;
+
 while (_name === "" || _name === null){
     _name = prompt("Введите имя (до 15 символов)");
 }
@@ -65,14 +70,20 @@ socket.on("timer_started", () => {
     start_game.style.display = "none";
 })
 
-//кнопка снова отображается, когда таймер закончился
+//----
 socket.on("timer_stoped", () => {
-    start_game.style.display = "block";
+    //start_game.style.display = "block";
 
     let count = 5;
     socket.emit("timer_game_start", count);
     
 })
+
+//кнопка снова отображается, когда таймер закончился
+socket.on("timer_game_stoped", (time) => {
+    start_game.style.display = "block";
+});
+
 
 //таймер
 socket.on("timer", (time) => {
@@ -91,8 +102,6 @@ socket.on("crush", (msg) => {
 })
 
 socket.emit("new player", _name);//при добавлении игрока спрашиваем его имя и записываем
-var img = new Image();
-img.src = "http://danila_pavlovv.istu.webappz.ru/img/background.jpg";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -137,11 +146,19 @@ socket.on("state", (players) => {
 
     let count_visibles = 0;
     let visible_id;
-    for (const id in players) {
+    /*for (const id in players) {
         const player = players[id];
         if(player._visible){
             count_visibles++;
             visible_id = id;
+        } 
+    }*/
+
+    for (i=0;i<players_limit;i++) {
+        const player = players[array_id[i]];
+        if(player?._visible){
+            count_visibles++;
+            visible_id = array_id[i];
         } 
     }
 
@@ -150,15 +167,24 @@ socket.on("state", (players) => {
 
     }
     if(Object.keys(players).length > 2){
-        for (i=0;i<2;i++) {
+        for (i=0;i<players_limit;i++) {
             const player = players[array_id[i]];
             if(player._visible) drawPlayer(context, player);
         }
+        //for (i=2;i<=Object.keys(players).length;i++) {
+        //    const player = players[array_id[i]];
+        //    player._visible = false;
+        //}
     }else{
         for (const id in players) {
             const player = players[id];
             if(player._visible) drawPlayer(context, player);//drawPlayer(context, player);
         }
     }
+
+    if(Object.keys(players).length > players_limit) watcher.textContent = (Object.keys(players).length - players_limit);
+    if(Object.keys(players).length <= players_limit) watcher.textContent = 0;
+    if(Object.keys(players).length < 2) start_game.style.display = "none";
+    else start_game.style.display = "block";
     
 });
