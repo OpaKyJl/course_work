@@ -29,11 +29,19 @@ timer.style.height = "30px";
 timer.style.fontSize = "30px";
 timer.style.textAlign = "center";//align-items: center;
 
+const timer_game = document.getElementById("timer_game");
+timer_game.style.width = "150px";
+timer_game.style.height = "30px";
+timer_game.style.fontSize = "30px";
+timer_game.style.textAlign = "center";//align-items: center;
+
 const watcher = document.getElementById("watcher");
 watcher.style.width = "150px";
 watcher.style.height = "30px";
 watcher.style.fontSize = "30px";
-watcher.style.textAlign ="center";
+//watcher.style.textAlign ="center";
+watcher.style.margin ="auto";
+watcher.style.display ="inline-block";
 
 
 //таймер по кнопке пошёл заного
@@ -51,11 +59,20 @@ socket.on("timer_started", () => {
 //кнопка снова отображается, когда таймер закончился
 socket.on("timer_stoped", () => {
     start_game.style.display = "block";
+
+    let count = 10;
+    socket.emit("timer_game_start", count);
+    
 })
 
 //таймер
 socket.on("timer", (time) => {
     timer.textContent = time;
+});
+
+//таймер самой игры
+socket.on("timer_game", (time) => {
+    timer_game.textContent = time;
 });
 
 //проверка работоспособности столкновения

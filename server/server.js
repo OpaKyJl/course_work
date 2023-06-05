@@ -55,6 +55,10 @@ server.listen(5000, () => {
 
 var timer;
 var done = true;
+
+var timer_game;
+var done_game_timer = true;
+
 let players = null;
 io.on("connection", (socket) => {
     players = getPlayers(socket);
@@ -71,6 +75,22 @@ io.on("connection", (socket) => {
                 clearInterval(intervalId);//когда таймер закончится, перестать его выполнять
                 io.sockets.emit("timer_stoped");
                 done = false;
+            }
+        }, 1000)
+    })
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //таймер самой игры
+    socket.on("timer_game_start", (count) => {
+        io.sockets.emit("timer_game_started");
+        const intervalId = setInterval(() => {
+            timer_game = count;
+            io.sockets.emit("timer_game", count);
+            if(count>0) count--;
+            else {
+                clearInterval(intervalId);//когда таймер закончится, перестать его выполнять
+                io.sockets.emit("timer_game_stoped");
+                done_game_timer = false;
             }
         }, 1000)
     })
@@ -151,8 +171,8 @@ const gameLoop = (players, io) => {
     //считываем таймер игры
     //console.log(timer);
     //let done = false;
-    console.log(timer);
-    console.log(done);
+    //console.log(timer);
+    //console.log(done);
     if(timer == 0 && !done){
         
         let random = Math.round(Math.random());//к ближайшему целом
