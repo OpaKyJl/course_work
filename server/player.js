@@ -17,6 +17,7 @@ class Player {
         this._space = false;
         //this._touch = false;
         this._block_side;
+        this._visible = true;
 
         this.positionX = 50;//Math.floor(Math.random()* 1610);// (max - min) + min 300;
         this.positionY = 80;//Math.floor(Math.random()* 920);

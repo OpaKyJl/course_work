@@ -187,6 +187,20 @@ const gameLoop = (players, io) => {
         done = true;
     }
 
+    if(timer_game == 0 && !done_game_timer){
+        
+        for (const id in players) {
+            const player = players[id];
+            if(player._hot == true){
+                player._visible = false;
+                console.log(player._name);//сделать инвизным;
+                console.log(player._visible);
+            } 
+        }
+
+        done_game_timer = true;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //отправляем данные о состоянии игры
     io.sockets.emit("state", players);

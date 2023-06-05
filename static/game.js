@@ -60,7 +60,7 @@ socket.on("timer_started", () => {
 socket.on("timer_stoped", () => {
     start_game.style.display = "block";
 
-    let count = 10;
+    let count = 5;
     socket.emit("timer_game_start", count);
     
 })
@@ -129,12 +129,12 @@ socket.on("state", (players) => {
     if(Object.keys(players).length > 2){
         for (i=0;i<2;i++) {
             const player = players[array_id[i]];
-            drawPlayer(context, player);
+            if(player._visible) drawPlayer(context, player);
         }
     }else{
         for (const id in players) {
             const player = players[id];
-                drawPlayer(context, player);
+            if(player._visible) drawPlayer(context, player);//drawPlayer(context, player);
         }
     }
     
