@@ -185,8 +185,8 @@ socket.on("state", (players) => {
         }
     }
 
-    if(Object.keys(players).length > players_limit) watcher.textContent = (Object.keys(players).length - players_limit);
-    if(Object.keys(players).length <= players_limit) watcher.textContent = 0;
+    if(Object.keys(players).length > count_visibles) watcher.textContent = (Object.keys(players).length - count_visibles);
+    if(Object.keys(players).length <= count_visibles) watcher.textContent = 0;
     if(Object.keys(players).length < 2) start_game.style.display = "none";
     else if(!game_started){
         start_game.style.display = "block";
