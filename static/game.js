@@ -17,6 +17,12 @@ img.src = "http://danila_pavlovv.istu.webappz.ru/img/background.jpg";
 
 var players_limit = 3;//2;
 var game_started = false;
+var count_players;
+var visibles = false;
+
+//function triggerButton1Click() {
+//    document.querySelector(".hider-recipient").dispatchEvent(new Event("click"));
+//}
 
 while (_name === "" || _name === null){
     _name = prompt("Введите имя (до 15 символов)");
@@ -85,6 +91,8 @@ socket.on("timer_stoped", () => {
 socket.on("timer_game_stoped", (time) => {
     start_game.style.display = "block";
     game_started = false;
+    if(winner.textContent == "x") start_game.click();
+
 });
 
 
@@ -174,10 +182,13 @@ socket.on("state", (players) => {
             const player = players[array_id[i]];
             if(player._visible) drawPlayer(context, player);
         }
+
+        //на сервер вынести
+        /*
         for (i=players_limit;i<Object.keys(players).length;i++) {
             const player = players[array_id[i]];
             player._visible = false;
-        }
+        }*/
     }else{
         for (const id in players) {
             const player = players[id];
@@ -185,11 +196,26 @@ socket.on("state", (players) => {
         }
     }
 
+    //count_players = count_visibles - 1;
+    //let visibles = false;
+    //if(count_visibles > 1) 
+    
+    //count_players = count_visibles;
+    //else count_visibles = 1;
+    //socket.emit("count_visibles", visibles);
+
     if(Object.keys(players).length > count_visibles) watcher.textContent = (Object.keys(players).length - count_visibles);
     if(Object.keys(players).length <= count_visibles) watcher.textContent = 0;
-    if(Object.keys(players).length < 2) start_game.style.display = "none";
+    if(Object.keys(players).length < 2 || count_visibles == 1) start_game.style.display = "none";
     else if(!game_started){
         start_game.style.display = "block";
     }
+
+    //if(count_visibles > 1 && game_started) triggerButton1Click();
+    const intervalId = setInterval(() => {
+        if(count_visibles > 1) visibles = true;
+        else visibles = false;
+        clearInterval(intervalId);
+    }, 1000 )
     
 });
