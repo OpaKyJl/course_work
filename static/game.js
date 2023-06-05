@@ -15,7 +15,8 @@ let _name = prompt("Введите имя (до 15 символов)");
 var img = new Image();
 img.src = "http://danila_pavlovv.istu.webappz.ru/img/background.jpg";
 
-var players_limit = 2;
+var players_limit = 3;//2;
+var game_started = false;
 
 while (_name === "" || _name === null){
     _name = prompt("Введите имя (до 15 символов)");
@@ -68,6 +69,7 @@ start_game.addEventListener('click', () => {
 //кнопка не отображается, пока идёт таймер
 socket.on("timer_started", () => {
     start_game.style.display = "none";
+    game_started = true;
 })
 
 //----
@@ -82,6 +84,7 @@ socket.on("timer_stoped", () => {
 //кнопка снова отображается, когда таймер закончился
 socket.on("timer_game_stoped", (time) => {
     start_game.style.display = "block";
+    game_started = false;
 });
 
 
@@ -166,15 +169,15 @@ socket.on("state", (players) => {
         winner.textContent = players[visible_id]._name;
 
     }
-    if(Object.keys(players).length > 2){
+    if(Object.keys(players).length > players_limit){
         for (i=0;i<players_limit;i++) {
             const player = players[array_id[i]];
             if(player._visible) drawPlayer(context, player);
         }
-        //for (i=2;i<=Object.keys(players).length;i++) {
-        //    const player = players[array_id[i]];
-        //    player._visible = false;
-        //}
+        for (i=players_limit;i<Object.keys(players).length;i++) {
+            const player = players[array_id[i]];
+            player._visible = false;
+        }
     }else{
         for (const id in players) {
             const player = players[id];
@@ -185,6 +188,8 @@ socket.on("state", (players) => {
     if(Object.keys(players).length > players_limit) watcher.textContent = (Object.keys(players).length - players_limit);
     if(Object.keys(players).length <= players_limit) watcher.textContent = 0;
     if(Object.keys(players).length < 2) start_game.style.display = "none";
-    else start_game.style.display = "block";
+    else if(!game_started){
+        start_game.style.display = "block";
+    }
     
 });

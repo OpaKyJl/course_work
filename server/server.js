@@ -119,9 +119,7 @@ const gameLoop = (players, io) => {
     //проверка соприкосновения с блоком
     for (const id in players) {
         const player = players[id];
-        var touch = 0;
 
-        //сделать чтоб понятно, с какой стороны препятствие
         var block_side = "";
         for(i=0; i < (array_blocks.length); i++){
             if(
@@ -139,7 +137,7 @@ const gameLoop = (players, io) => {
                 if((player.positionX < (array_blocks[i][0] + array_blocks[i][2] + 30)) && (player.positionX > (array_blocks[i][0] + array_blocks[i][2])) && (player.positionY < (array_blocks[i][1] + array_blocks[i][3] + 30)) && (player.positionY > (array_blocks[i][1] + array_blocks[i][3]))) block_side = "right-down";
                 if((player.positionX > (array_blocks[i][0] - 30)) && (player.positionX < (array_blocks[i][0] - 15)) && (player.positionY > (array_blocks[i][1] - 30)) && (player.positionY < (array_blocks[i][1] - 15))) block_side = "left-up";
                 if((player.positionX > (array_blocks[i][0] - 30)) && (player.positionX < (array_blocks[i][0] - 15)) && (player.positionY < (array_blocks[i][1] + array_blocks[i][3] + 30)) && (player.positionY > (array_blocks[i][1] + array_blocks[i][3]))) block_side = "left-down";
-                touch++;
+                
             }
         }
 
@@ -152,18 +150,32 @@ const gameLoop = (players, io) => {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //проверка, что второй игрок в радиусе действия и его можно "осалить"
-    if(    players[array_id[0]]?.positionX > (players[array_id[1]]?.positionX - 55)//? - чтоб не вылазила ошибка при undefined 
-        && players[array_id[0]]?.positionX < (players[array_id[1]]?.positionX + 55) 
-        && players[array_id[0]]?.positionY < (players[array_id[1]]?.positionY + 55) 
-        && players[array_id[0]]?.positionY > players[array_id[1]]?.positionY - 55)
-    {
-        if(players[array_id[0]]?._space == true || players[array_id[1]]?._space == true){
-            if(players[array_id[0]]?._space == true){
-                hot(players[array_id[1]], players[array_id[0]]);
-            }else if(players[array_id[1]]?._space == true){
-                hot(players[array_id[0]], players[array_id[1]]);
+    
+    players_1 = players;
+    players_2 = players;
+    for (const id_1 in players_1) {
+        const player_1 = players_1[id_1];
+
+        for (const id_2 in players_2) {
+            const player_2 = players_2[id_2];
+
+            //проверка, чтоб не тыкал сам на себя
+            if(player_1?._id != player_2?._id){
+                if(    player_1?.positionX > (player_2?.positionX - 55)//? - чтоб не вылазила ошибка при undefined 
+                && player_1?.positionX < (player_2?.positionX + 55) 
+                && player_1?.positionY < (player_2?.positionY + 55) 
+                && player_1?.positionY > player_2?.positionY - 55)
+                {
+                    if(player_1?._space == true || player_2?._space == true){
+                        if(player_1?._space == true && player_1?._hot == true){
+                            hot(player_2, player_1);
+                        }else if(player_2?._space == true && player_2?._hot == true){
+                            hot(player_1, player_2);
+                        }
+                    }
+                }
             }
+
         }
     }
     
@@ -173,20 +185,27 @@ const gameLoop = (players, io) => {
     //let done = false;
     //console.log(timer);
     //console.log(done);
+
+    //создаём массив оставшихся (видимых) игроков
+    let array_visible = [];
+        let j = 0;
+        for (const id in players) {
+            if(players[id]._visible){
+                array_visible[j] = id;
+                j++;
+            }
+        }
+
+    //срабатывание таймера воды
     if(timer == 0 && !done){
         
-        let random = Math.round(Math.random());//к ближайшему целом
-        switch(random){
-            case 0:
-                players[array_id[0]]._hot = true;
-                break;
-            case 1:
-                players[array_id[1]]._hot = true;
-                break;
-        }
+        let random = Math.round(Math.random()*(array_visible.length - 1));//к ближайшему целом
+        //сделать, чтоб среди оставшихся (visible) рандомило
+        players[array_visible[random]]._hot = true;
         done = true;
     }
 
+    //срабатывание таймер игры
     if(timer_game == 0 && !done_game_timer){
         
         for (const id in players) {
