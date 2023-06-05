@@ -20,12 +20,26 @@ while (_name.length > 15){
 }
 
 const start_game = document.getElementById("start_game");
+start_game.style.width = "150px";
+start_game.style.height = "80px";
+start_game.style.fontSize = "30px";
 const timer = document.getElementById("timer");
+timer.style.width = "150px";
+timer.style.height = "30px";
+timer.style.fontSize = "30px";
+timer.style.textAlign = "center";//align-items: center;
+
+const watcher = document.getElementById("watcher");
+watcher.style.width = "150px";
+watcher.style.height = "30px";
+watcher.style.fontSize = "30px";
+watcher.style.textAlign ="center";
+
 
 //таймер по кнопке пошёл заного
 //сделать чтобы если игроков меньше 2 таймер не запускался
 start_game.addEventListener('click', () => {
-        let count = 30;
+        let count = 5;
         socket.emit("start_game", count);
 })
 
@@ -78,7 +92,10 @@ socket.on("drawedBlocks", (array) => {
 
 socket.on("state", (players) => {
     context.beginPath();
-    context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
+    //context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
+    context.fillStyle = "rgb(10, 32, 224)";
+    context.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
+    context.fillStyle = "rgb(240, 247, 21)";
     for(j = 0; j < array_blocks.length; j++){
         context.fillRect(array_blocks[j][0] ,array_blocks[j][1], array_blocks[j][2], array_blocks[j][3]);
     }

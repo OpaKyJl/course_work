@@ -10,11 +10,30 @@
 <body>
     <table>
         <tr>
-            <td><div id="timer">ТАЙМЕР</div></td>
-            <td><button id="start_game">START</button></td>
+            <td>
+                <canvas id="canvas"></canvas>
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            <div style="font-size: 30px; text-align: center;">Смотрят:</div> 
+                            <div id="watcher">x</div>
+                            <button id="start_game">START</button>
+                            <div id="timer" style="border: 3px solid rgb(0, 0, 0);"  >ТАЙМЕР</div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
-    <canvas id="canvas"></canvas>
+    
 </body>
 <script src="../static/drawPlayer.js"></script>
 <script src="../static/game.js"></script>

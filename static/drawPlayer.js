@@ -3,8 +3,8 @@ const drawPlayer = (context, player) => {
     const playerY = player.positionY;
 
     context.beginPath();
-    context.fillStyle = "black";
-    context.font = "20px sans-serif";
+    context.fillStyle = "rgb(255, 152, 8)";
+    context.font = "30px sans-serif";
     context.textAlign = "center";
     context.fillText(`${player._name}`, playerX, playerY - 50);
     context.closePath();
