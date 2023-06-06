@@ -209,11 +209,11 @@ const gameLoop = (players, io) => {
         
         for (const id in players) {
             const player = players[id];
-            console.log(array_visible);
+            //console.log(array_visible);
             if(player._hot == true && array_visible.length != 1){
                 player._visible = false;
-                console.log(player._name);//сделать инвизным;
-                console.log(player._visible);
+                //console.log(player._name);//сделать инвизным;
+                //console.log(player._visible);
             }else{
                 player._hot = false;
             } 
@@ -223,7 +223,7 @@ const gameLoop = (players, io) => {
     }
 
     var players_limit = 3;
-    console.log(players.length);
+    //console.log(players.length);
     for (i=players_limit;i<array_id.length;i++) {
         const player = players[array_id[i]];
         player._visible = false;
