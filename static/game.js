@@ -1,7 +1,7 @@
 const socket = io();
 
-width = 1610;//1920 - 300 - 10;//1600;
-height = 920//1080 - 150 - 10;//800;
+width = 1610;
+height = 920;
 const WINDOW_WIDTH = width;
 const WINDOW_HIGHT = height;
 
@@ -12,24 +12,18 @@ const context = canvas.getContext("2d");
 
 let _name = prompt("Введите имя (до 15 символов)");
 
-var img = new Image();
-img.src = "http://danila_pavlovv.istu.webappz.ru/img/background.jpg";
-
-var players_limit = 3;//2;
+var players_limit = 3;
 var game_started = false;
 var count_players;
 var visibles = false;
 
-//function triggerButton1Click() {
-//    document.querySelector(".hider-recipient").dispatchEvent(new Event("click"));
-//}
+//ввод имени
+while (_name === "" || _name === null || _name.length > 15){
+    _name = prompt("Введите имя (до 15 символов)");
+}
 
-while (_name === "" || _name === null){
-    _name = prompt("Введите имя (до 15 символов)");
-}
-while (_name.length > 15){
-    _name = prompt("Введите имя (до 15 символов)");
-}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//сюда понавставлял CSS, чтоб не париться
 
 const start_game = document.getElementById("start_game");
 start_game.style.width = "150px";
@@ -40,19 +34,18 @@ const timer = document.getElementById("timer");
 timer.style.width = "150px";
 timer.style.height = "30px";
 timer.style.fontSize = "30px";
-timer.style.textAlign = "center";//align-items: center;
+timer.style.textAlign = "center";
 
 const timer_game = document.getElementById("timer_game");
 timer_game.style.width = "150px";
 timer_game.style.height = "30px";
 timer_game.style.fontSize = "30px";
-timer_game.style.textAlign = "center";//align-items: center;
+timer_game.style.textAlign = "center";
 
 const watcher = document.getElementById("watcher");
 watcher.style.width = "150px";
 watcher.style.height = "30px";
 watcher.style.fontSize = "30px";
-//watcher.style.textAlign ="center";
 watcher.style.margin ="auto";
 watcher.style.display ="inline-block";
 
@@ -60,13 +53,12 @@ const winner = document.getElementById("winner");
 winner.style.width = "150px";
 winner.style.height = "30px";
 winner.style.fontSize = "30px";
-//watcher.style.textAlign ="center";
 winner.style.margin ="auto";
 winner.style.display ="inline-block";
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//таймер по кнопке пошёл заного
-//сделать чтобы если игроков меньше 2 таймер не запускался
+//по кнопке начинается игра (стартует таймер выбора воды)
 start_game.addEventListener('click', () => {
         let count = 5;
         socket.emit("start_game", count);
@@ -78,25 +70,21 @@ socket.on("timer_started", () => {
     game_started = true;
 })
 
-//----
+//когда выберется вода, запустится таймер игры
 socket.on("timer_stoped", () => {
-    //start_game.style.display = "block";
-
     let count = 5;
-    socket.emit("timer_game_start", count);
-    
+    socket.emit("timer_game_start", count); 
 })
 
 //кнопка снова отображается, когда таймер закончился
 socket.on("timer_game_stoped", (time) => {
     start_game.style.display = "block";
     game_started = false;
-    if(winner.textContent == "x") start_game.click();
-
+    if(winner.textContent == "x" || player_winner != winner.textContent ) start_game.click();
 });
 
 
-//таймер
+//таймер выбора воды
 socket.on("timer", (time) => {
     timer.textContent = time;
 });
@@ -106,48 +94,37 @@ socket.on("timer_game", (time) => {
     timer_game.textContent = time;
 });
 
-//проверка работоспособности столкновения
-socket.on("crush", (msg) => {
-    alert(msg);
-    //window.location.reload();
-})
+//при добавлении игрока спрашиваем его имя и записываем
+socket.emit("new player", _name);
 
-socket.emit("new player", _name);//при добавлении игрока спрашиваем его имя и записываем
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-//вынести на сервер
-/*let array_blocks = ["x0", "y0", "x1", "y1"];
-
-for(i=0; i < 10; i++){
-    let x0 = Math.floor(Math.random()* (WINDOW_WIDTH - 60));
-    let y0 = Math.floor(Math.random()* (WINDOW_HIGHT - 60));
-    let sizex = Math.floor(Math.random()* (100 - 20) + 20);
-    let sizey = Math.floor(Math.random()* (100 - 20) + 20);
-    let x1 = sizex;
-    let y1 = sizey;
-
-    array_blocks.push([x0, y0, x1, y1]);
-}*/
-
-///////////////////////////////////////////////////////////////////////////////////////////////
+//массив с данными о препядствиях (блоках)
 var array_blocks;
 socket.on("drawedBlocks", (array) => {
     array_blocks = array;
 })
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//обновление состояния игры
+
 socket.on("state", (players) => {
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    //отрисовка фона
+
     context.beginPath();
-    //context.drawImage(img, 0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
     context.fillStyle = "rgb(10, 32, 224)";
     context.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HIGHT);
     context.fillStyle = "rgb(240, 247, 21)";
+
+    //отрисовка препятствий
     for(j = 0; j < array_blocks.length; j++){
         context.fillRect(array_blocks[j][0] ,array_blocks[j][1], array_blocks[j][2], array_blocks[j][3]);
     }
     context.closePath();
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //массив айдишников
     let array_id = [];
     let i = 0;
     for (const id in players) {
@@ -157,14 +134,8 @@ socket.on("state", (players) => {
 
     let count_visibles = 0;
     let visible_id;
-    /*for (const id in players) {
-        const player = players[id];
-        if(player._visible){
-            count_visibles++;
-            visible_id = id;
-        } 
-    }*/
 
+    //запоминаем "видимых" игроков
     for (i=0;i<players_limit;i++) {
         const player = players[array_id[i]];
         if(player?._visible){
@@ -173,36 +144,25 @@ socket.on("state", (players) => {
         } 
     }
 
-    if(count_visibles == 1 && (Object.keys(players).length > 1)){//проверять сколько visible
+    //отображение, кто победитель
+    if(count_visibles == 1 && (Object.keys(players).length > 1)){
         winner.textContent = players[visible_id]._name;
+        player_winner = players[visible_id]._name;
 
     }
+
+    //отрисовка игроков (не больше установленного лимита (сейчас = 3))
     if(Object.keys(players).length > players_limit){
         for (i=0;i<players_limit;i++) {
             const player = players[array_id[i]];
             if(player._visible) drawPlayer(context, player);
         }
-
-        //на сервер вынести
-        /*
-        for (i=players_limit;i<Object.keys(players).length;i++) {
-            const player = players[array_id[i]];
-            player._visible = false;
-        }*/
     }else{
         for (const id in players) {
             const player = players[id];
-            if(player._visible) drawPlayer(context, player);//drawPlayer(context, player);
+            if(player._visible) drawPlayer(context, player);
         }
     }
-
-    //count_players = count_visibles - 1;
-    //let visibles = false;
-    //if(count_visibles > 1) 
-    
-    //count_players = count_visibles;
-    //else count_visibles = 1;
-    //socket.emit("count_visibles", visibles);
 
     if(Object.keys(players).length > count_visibles) watcher.textContent = (Object.keys(players).length - count_visibles);
     if(Object.keys(players).length <= count_visibles) watcher.textContent = 0;
@@ -210,12 +170,6 @@ socket.on("state", (players) => {
     else if(!game_started){
         start_game.style.display = "block";
     }
-
-    //if(count_visibles > 1 && game_started) triggerButton1Click();
-    const intervalId = setInterval(() => {
-        if(count_visibles > 1) visibles = true;
-        else visibles = false;
-        clearInterval(intervalId);
-    }, 1000 )
     
 });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

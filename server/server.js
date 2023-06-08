@@ -1,4 +1,3 @@
-//const { count } = require("console");
 const express = require("express");
 const http = require("http");
 const path = require("path");
@@ -15,23 +14,26 @@ app.set("port", 5000);
 
 app.use("/static", express.static(path.dirname(__dirname) + "/static"));
 
+
+//при запросе на переход на localhost ответом отправляется index.html 
 app.get("/", (request, response) => {
     response.sendFile(path.join(__dirname, "index.html"));
 });
 
+//массив препятствий (блоков)
 var array_blocks = [];
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 server.listen(5000, () => {
     console.log("Starting server on port 5000");
 
-    width = 1610;//1920 - 300 - 10;//1600;
-    height = 920//1080 - 150 - 10;//800;
+    width = 1610;
+    height = 920;
     const WINDOW_WIDTH = width;
     const WINDOW_HIGHT = height;
     
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     //рисуем препятствия (при запуске сервера)
-    //var array_blocks = ["x0", "y0", "x1", "y1"];
-
     for(i=0; i < 10; i++){
         let x0 = Math.floor(Math.random()* ((WINDOW_WIDTH - 60 )- 100) + 100);
         let y0 = Math.floor(Math.random()* ((WINDOW_HIGHT - 60) - 160) + 160);
@@ -42,29 +44,34 @@ server.listen(5000, () => {
     
            array_blocks.push([x0, y0, x1, y1]);
     }
-    module.exports.array_blocks = () =>{
-        return array_blocks;
-    };
-    array = array_blocks;
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //отправка клиенту массива с данными о препятствии
     setInterval(() => {
-        io.sockets.emit("drawedBlocks", array);
+        io.sockets.emit("drawedBlocks", array_blocks);
     }, 1000 )
 
 });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//таймер выбора воды
 var timer;
 var done = true;
 
+//таймер самой игры
 var timer_game;
 var done_game_timer = true;
 
+//состояние игроков
 let players = null;
+
 io.on("connection", (socket) => {
+
+    //добавляется игрок
     players = getPlayers(socket);
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //начинается таймер при нажатии на кнопку
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    //начинается таймер выбора воды при нажатии на кнопку
     socket.on("start_game", (count) => {
         io.sockets.emit("timer_started");
         const intervalId = setInterval(() => {
@@ -78,8 +85,9 @@ io.on("connection", (socket) => {
             }
         }, 1000)
     })
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     //таймер самой игры
     socket.on("timer_game_start", (count) => {
         io.sockets.emit("timer_game_started");
@@ -94,18 +102,20 @@ io.on("connection", (socket) => {
             }
         }, 1000)
     })
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
 });
 
-
+//функция "осаливания"
 function hot(player_hot, player_cold){
     player_hot._hot = true;
     player_cold._hot = false;
 }
 
-//var crush = true;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//состояние игры
 const gameLoop = (players, io) => {
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //массив айдишников
     let array_id = [];
         let i = 0;
@@ -114,7 +124,7 @@ const gameLoop = (players, io) => {
             i++;
         }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     //проверка соприкосновения с блоком
     for (const id in players) {
         const player = players[id];
@@ -141,15 +151,11 @@ const gameLoop = (players, io) => {
         }
 
         player._block_side = block_side;
-        //console.log(array_blocks);
-        //console.log(player._touch);
-        //console.log(block_side);
-        //console.log(player.positionX);
-        //console.log(player.positionY);
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    //проверка соприкосновени игрока с другим игроком + "осаливание"
     players_1 = players;
     players_2 = players;
     for (const id_1 in players_1) {
@@ -163,7 +169,8 @@ const gameLoop = (players, io) => {
                 if(    player_1?.positionX > (player_2?.positionX - 55)//? - чтоб не вылазила ошибка при undefined 
                 && player_1?.positionX < (player_2?.positionX + 55) 
                 && player_1?.positionY < (player_2?.positionY + 55) 
-                && player_1?.positionY > player_2?.positionY - 55)
+                && player_1?.positionY > player_2?.positionY - 55 
+                && player_1?._visible == true && player_2?._visible)
                 {
                     if(player_1?._space == true || player_2?._space == true){
                         if(player_1?._space == true && player_1?._hot == true){
@@ -177,13 +184,6 @@ const gameLoop = (players, io) => {
 
         }
     }
-    
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //считываем таймер игры
-    //console.log(timer);
-    //let done = false;
-    //console.log(timer);
-    //console.log(done);
 
     //создаём массив оставшихся (видимых) игроков
     let array_visible = [];
@@ -197,23 +197,18 @@ const gameLoop = (players, io) => {
 
     //срабатывание таймера воды
     if(timer == 0 && !done){
-        
-        let random = Math.round(Math.random()*(array_visible.length - 1));//к ближайшему целом
-        //сделать, чтоб среди оставшихся (visible) рандомило
+        let random = Math.round(Math.random()*(array_visible.length - 1));//к ближайшему целому
         players[array_visible[random]]._hot = true;
         done = true;
     }
 
-    //срабатывание таймер игры
+    //срабатывание таймера игры
     if(timer_game == 0 && !done_game_timer){
         
         for (const id in players) {
             const player = players[id];
-            //console.log(array_visible);
             if(player._hot == true && array_visible.length != 1){
                 player._visible = false;
-                //console.log(player._name);//сделать инвизным;
-                //console.log(player._visible);
             }else{
                 player._hot = false;
             } 
@@ -223,18 +218,19 @@ const gameLoop = (players, io) => {
     }
 
     var players_limit = 3;
-    //console.log(players.length);
+
     for (i=players_limit;i<array_id.length;i++) {
         const player = players[array_id[i]];
         player._visible = false;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //отправляем данные о состоянии игры
     io.sockets.emit("state", players);
     if(array_visible.length == 1) io.sockets.emit("game_end", true);
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//отправление клиенту данные о состоянии игры 60 раз в секунду
 setInterval(() => {
     if (players && io){
         gameLoop(players, io);

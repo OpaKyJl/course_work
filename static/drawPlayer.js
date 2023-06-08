@@ -17,7 +17,6 @@ const drawPlayer = (context, player) => {
         context.stroke();
         context.closePath();
     }else{
-        //_hot
         context.beginPath();
         context.strokeStyle = "red";
         context.lineWidth = 10;
